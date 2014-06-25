@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mauris</title>
+<link href="styles/main.css" rel="stylesheet" type="text/css">
+<link href="css/footable.core.css?v=2-0-1" rel="stylesheet" type="text/css"/>
+<link href="css/footable.standalone.css" rel="stylesheet" type="text/css"/>
+<link href="css/footable-demos.css" rel="stylesheet" type="text/css"/>
+
+<!-- javascript Table  -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!--<script src="script/jquery-1.11.1.min.js" type="text/javascript"></script>-->
+<script src="script/footable.js?v=2-0-1" type="text/javascript"></script>
+<script src="script/footable.sort.js?v=2-0-1" type="text/javascript"></script>
+<script src="script/footable.filter.js?v=2-0-1" type="text/javascript"></script>
+<script src="script/footable.paginate.js?v=2-0-1" type="text/javascript"></script>
+
+<!--<script src="arbor/lib/jquery.min.js"></script>-->
+<script src="arbor/lib/arbor.js"></script>
+<script src="arbor/lib/arbor-tween.js"></script>
+<script src="arbor/lib/graphics.js"></script>
+<script src="arbor/lib/renderer.js"></script>
+
+<!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.--><script>var __adobewebfontsappname__="dreamweaver"</script><script src="http://use.edgefonts.net/source-sans-pro:n6:default.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="wrapper">
+      <header id="top">
+        <h1>Mauris Anabolic</h1>
+        <nav id="mainnav">
+          <ul>
+            <li><a href="index.html" class="thispage">Home</a></li>
+            <li><a href="webapplicatie.psp">Webapplication</a></li>
+            <li><a href="allpurpose.psp">All-purpose tools </a></li>
+            <li><a href="translator.psp">Translator</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div id="hero"><img src="images/starship5D.png" alt="" height="100"/></div>
+      <article id="main">
+        <h2>Mauris Anabolic Search Suite and Visualization</h2>
+        <canvas id="viewport" width="400" height="800"></canvas>
+        <p>&nbsp;</p>
+        <p>&nbsp; </p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+      </article>
+      <aside id="sidebar">
+        <h2>Input and result</h2>
+        
+<%
+import cgi
+import sys
+sys.path.append('/home/bi2_pg1/public_html/script')
+import textmineLevi
+textfield = form.getfirst('textfield')
+textfield2 = form.getfirst('textfield2')
+%>
+        <form id="form1" name="form1" method="get">
+          <p>
+            <label for="textfield">Voer compound in:</label>
+            <input type="text" name="textfield" id="textfield">
+            <label for="textfield2"><br>
+              Voer organisme in:</label>
+            <input type="text" name="textfield2" id="textfield2">
+           </p>
+<% textmineLevi.setOrganism(textfield2)%>
+<% textmineLevi.setToxic(textfield)%>
+<% textmineLevi.setHits(textfield, textfield2)%>
+<input type="hidden" class="hits" value="<%=textmineLevi.hits%>" />
+<input type="hidden" class="elegansHits" value="<%=textmineLevi.elegansHits%>" />
+<input type="hidden" class="discoideumHits" value="<%=textmineLevi.discoideumHits%>" />
+<input type="hidden" class="drerioHits" value="<%=textmineLevi.drerioHits%>" />
+          <p>
+            <input type="submit" name="submit" id="submit" value="Retrieve information">
+          </p>
+            <div class="tablePOS">
+                <table width="876" class="footable metro_blue" id="myTable" data-page-size="5">
+                    <thead>
+                      <tr>
+                        <th width="121"> Titel </th>
+                        <th width="111"> Datum </th>
+                        <th width="139"> Auteur </th>
+                        <th width="185" data-hide="all"> Abstract </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <%textmineLevi.setRecords() %>
+                      <%=textmineLevi.createTable() %>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="5"><div class="pagination pagination-centered"></div></td>
+                      </tr>
+                    </tfoot>
+                </table>
+            </div>
+                      <p>&nbsp;</p>
+        
+        <script language="javascript" type="text/javascript"> 
+
+        function getURLParameter(name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+        }
+        //alert(getURLParameter('textfield'));
+        
+		function myArbor() {
+            var sys = arbor.ParticleSystem(1000, 400,1);
+            sys.parameters({gravity:true});
+            sys.renderer = Renderer("#viewport") ;
+            var toxic = getURLParameter('textfield')
+            var organism = getURLParameter('textfield2')
+            var hits = document.querySelector(".hits").value;
+            var elegansHits = document.querySelector(".elegansHits").value;
+            var discoideumHits = document.querySelector(".discoideumHits").value;
+            var drerioHits = document.querySelector(".drerioHits").value;
+            var data = {
+            nodes:{
+            Compound:{'color':'black','shape':'dot','label':toxic},
+            Elegans:{'color':'grey','shape':'dot','label':'C.Elegans'},
+            Discoideum:{'color':'grey','shape':'dot','label':'D.Discoideum'},
+            Drerio:{'color':'grey','shape':'dot','label':'D.Rerio'},
+            variableOrganism:{'color':'grey','shape':'dot','label':organism},
+            Hits:{'color':'none','shape':'square','label':hits},
+            ElegansHits:{'color':'none','shape':'square','label':elegansHits},
+            DiscoideumHits:{'color':'none','shape':'square','label':discoideumHits},
+            DrerioHits:{'color':'none','shape':'square','label':drerioHits}
+            },
+            edges:{
+            Compound:{ Hits:{}, ElegansHits:{}, DiscoideumHits:{}, DrerioHits:{} },
+            Hits:{ variableOrganism:{} },
+            ElegansHits:{ Elegans:{} },
+            DiscoideumHits:{ Discoideum:{} },
+            DrerioHits:{ Drerio:{} }
+            }
+            };
+            sys.graft(data);
+		}
+        </script>
+        
+        <script>
+        var rowCount = $('#myTable tr').length;
+        if(rowCount > 0)
+            myArbor();
+        </script>
+        
+                </form>
+                  </aside>
+                  <footer>
+                    <p>© Copyright Hogeschool van Arnhem Nijmegen Bioinformatica</p>
+                  </footer>
+
+        <script type="text/javascript">
+            $(function () {
+                $('.footable').footable();
+            });
+        </script>
+</body>
+</html>
